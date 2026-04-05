@@ -1,8 +1,10 @@
+
 import dotenv from "dotenv";
 dotenv.config(); 
 
 import express from "express";
 import cors from "cors";
+
 
 import connectDB from "./configs/mongodb.js";
 import connectCloudinary from "./configs/cloudinary.js";
@@ -12,8 +14,13 @@ import { clerkMiddleware } from "@clerk/express";
 import courseRouter from "./routes/courseRoute.js";
 import userRouter from "./routes/userRoutes.js";
 
+
+
 //Initialize Express
 const app = express();
+
+
+
 
 // Connect to DB and Cloudinary
 await connectDB();
@@ -22,6 +29,7 @@ connectCloudinary();
 // Middlewares
 app.use(cors());
 app.use(clerkMiddleware());
+app.use(express.json());
 
 // Routes
 app.get("/", (req, res) => res.send("API Working"));

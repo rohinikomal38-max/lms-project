@@ -1,9 +1,8 @@
-
 import { clerkClient } from '@clerk/express';
 import Course from '../models/Course.js';
 import { v2 as cloudinary } from "cloudinary";
 import { Purchase } from '../models/Purchase.js';
-
+import User from '../models/User.js';
 
 // Update role to educator
 export const updateRoleToEducator = async (req, res) => {
@@ -25,9 +24,9 @@ export const updateRoleToEducator = async (req, res) => {
 
 
 // Add New Course
-export const addCourse = async (req, res) => {
+export const addCourse = async (req, res) => {  
+    console.log("Uploading to Cloudinary...");  
     try {
-        
         const { courseData } = req.body;
         const imageFile = req.file;
        
@@ -41,31 +40,30 @@ export const addCourse = async (req, res) => {
             });
         }
 
-        let imageUpload;
+        let imageUpload = null;
 
-        // 🔥 Cloudinary Upload (with full debug)
         try {
-            imageUpload = await cloudinary.uploader.upload(
-                imageFile.path // 👉 real file upload
-            );
-
-            console.log("✅ Upload Result:", imageUpload);
+         const imageUpload = await cloudinary.uploader.upload(req.file.path, {
+            resource_type: 'image'
+         });
+    
+            console.log("Cloudinary Upload Success:", imageUpload.secure_url);
 
         } catch (error) {
-            console.log("❌ FULL ERROR OBJECT:", error);
-            console.log("❌ ERROR MESSAGE:", error.message);
-            console.log("❌ ERROR RESPONSE:", error?.response);
+            console.log("Cloudinary Error:", error.message);
+            return res.status(500).json({
+                success: false,
+                message: 'Cloudinary upload failed: ' + error.message
+            });
         }
 
-        // Parse course data
         const parsedCourseData = JSON.parse(courseData);
+
         parsedCourseData.educator = educatorId;
 
-        // ✅ Fallback (safe handling)
         parsedCourseData.courseThumbnail =
-            imageUpload?.secure_url || "https://via.placeholder.com/150";
+            imageUpload.secure_url;
 
-        // Create course in MongoDB
         const newCourse = await Course.create(parsedCourseData);
 
         res.status(201).json({
@@ -75,6 +73,7 @@ export const addCourse = async (req, res) => {
         });
 
     } catch (error) {
+        console.log("OUTER ERROR:", error.message);
         res.status(500).json({
             success: false,
             message: error.message
@@ -82,84 +81,96 @@ export const addCourse = async (req, res) => {
     }
 };
 
+
 // Get Educator Courses
-export const getEducatorCourses = async (req, res)=>{
+export const getEducatorCourses = async (req, res) => {
     try {
-        const { educator } = req.auth();
+        const { userId } = req.auth();
 
-        const courses = await Course.find({educator})
-        res.json({ success: true, courses })
-    } catch (errror) {
-        res.json({ success: false, message: error.message })
+        const courses = await Course.find({ educator: userId });
 
-    }
-}
-
-// Get Educator Dashboard Data (Total Earning, Enrolled Students, No. of Courses)
-
-export const educatorDashboardData = async (req, res)=>{
-    try {
-       const { educator } = req.auth();
-       const courses = await Course.find({educator});
-       const totalCourses = courses.length;
-
-       const courseIds = courses.map(course => course._id);
-
-       // Calculate total earnings from purchases
-       const purchases = await Purchase.find({
-        courseId: {$in: courseIds},
-        status: 'completed'
-       });
-
-       const totalEarnings = purchases.reduce((sum, purchase)=> sum + purchase.amount, 0);
-
-       // Collect unique enrolled student IDs with their course titles
-       const enrolledStudentsData = [];
-       for(const course of courses){
-        const students = await User.find({
-            _id: {$in: course.enrolledStudents}
-        }, 'name imageUrl')
-
-        students.forEach(student => {
-            enrolledStudentsData.push({
-                courseTitle: course.courseTitle,
-                student
-            });
-        });
-       }
-
-       res.json({success: true, dashboardData: {
-        totalEarnings, enrolledStudentsData, totalCourses
-       }})
-
-
+        res.json({ success: true, courses });
 
     } catch (error) {
-       res.json({ success: false, message: error.message });
+        res.json({ success: false, message: error.message });
     }
-}
+};
 
-// Get Enrolled Students Data with Purchase Data
-export const getEnrolledStudentsData = async (req, res)=>{
-   try {
-       const { educator } = req.auth();
-       const courses = await Course.find({educator});
-       const courseIds = courses.map(course => course._id);
 
-       const purchases = await Purchase.find({
-        courseId: { $in: courseIds },
-        status: 'completed'
-       }).populate('userId', 'name imageUrl').populate('courseId', 'courseTitle')
+// Educator Dashboard Data
+export const educatorDashboardData = async (req, res) => {
+    try {
+        const { userId } = req.auth();
 
-       const enrolledStudents = purchases.map(purchase => ({
-        student: purchase.userId,
-        courseTitle: purchase.courseId.courseTitle,
-        purchaseData: purchase.createdAt
-       }));
+        const courses = await Course.find({ educator: userId });
+        const totalCourses = courses.length;
 
-       res.json({success: true, enrolledStudents})
+        const courseIds = courses.map(course => course._id);
 
-   } catch (error) {
-       res.json({ success: false, message: error.message });
-   }
-}
+        const purchases = await Purchase.find({
+            courseId: { $in: courseIds },
+            status: 'completed'
+        });
+
+        const totalEarnings = purchases.reduce(
+            (sum, purchase) => sum + purchase.amount, 0
+        );
+
+        const enrolledStudentsData = [];
+
+        for (const course of courses) {
+            const students = await User.find(
+                { _id: { $in: course.enrolledStudents } },
+                'name imageUrl'
+            );
+
+            students.forEach(student => {
+                enrolledStudentsData.push({
+                    courseTitle: course.courseTitle,
+                    student
+                });
+            });
+        }
+
+        res.json({
+            success: true,
+            dashboardData: {
+                totalEarnings,
+                enrolledStudentsData,
+                totalCourses
+            }
+        });
+
+    } catch (error) {
+        res.json({ success: false, message: error.message });
+    }
+};
+
+
+// Get Enrolled Students Data
+export const getEnrolledStudentsData = async (req, res) => {
+    try {
+        const { userId } = req.auth();
+
+        const courses = await Course.find({ educator: userId });
+        const courseIds = courses.map(course => course._id);
+
+        const purchases = await Purchase.find({
+            courseId: { $in: courseIds },
+            status: 'completed'
+        })
+            .populate('userId', 'name imageUrl')
+            .populate('courseId', 'courseTitle');
+
+        const enrolledStudents = purchases.map(purchase => ({
+            student: purchase.userId,
+            courseTitle: purchase.courseId.courseTitle,
+            purchaseDate: purchase.createdAt
+        }));
+
+        res.json({ success: true, enrolledStudents });
+
+    } catch (error) {
+        res.json({ success: false, message: error.message });
+    }
+};

@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react'
 import { AppContext } from '../../context/AppContext'
 import {Line} from 'rc-progress'
 import Footer from '../../components/student/Footer'
+import courseImg from '../../assets/course_1.png'
 
 const MyEnrollments = () => {
 
@@ -41,10 +42,13 @@ const MyEnrollments = () => {
           </tr>
         </thead>
         <tbody className='text-gray-700'>
-          {enrolledCourses.map((course, index)=>(
+          {enrolledCourses && enrolledCourses.map((course, index)=>(
             <tr key={index} className='border-b border-gray-500/20'>
               <td className='md:px-4 md:pl-4 py-3 flex items-center space-x-3'>              
-                <img src={course.courseThumbnail} alt="" className='w-14 sm:w-24
+                <img src={course.courseThumbnail || courseImg}                
+                onError={(e) => {
+                  e.target.src = courseImg
+                }} alt="" className='w-14 sm:w-24
                 md:w-28' />
                 <div className='flex-1'>
                   <p className='mb-1 max-sm:text-sm'>{course.courseTitle}                    

@@ -1,10 +1,14 @@
+import { useContext } from 'react'
+import { AppContext } from '../../context/AppContext'
+import axios from 'axios'
+import { toast } from 'react-toastify'
 import React, { useEffect, useRef, useState } from 'react'
 import uniqid from 'uniqid';
 import Quill  from 'quill';
 import { assets } from '../../assets/assets';
 
 const AddCourse = () => {
-
+const { backendUrl, getToken } = useContext(AppContext)
   const quillRef = useRef(null);
   const editorRef = useRef(null);
 
@@ -91,7 +95,51 @@ const AddCourse = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-  };
+
+    if (!image) {
+        toast.error('Please upload a course thumbnail')
+        return
+    }
+
+    const courseData = {
+        courseTitle,
+        courseDescription: quillRef.current.root.innerHTML,
+        coursePrice: Number(coursePrice),
+        discount: Number(discount),
+        courseContent: chapters.map(({ collapsed, ...rest }) => rest)
+    }
+
+    const formData = new FormData()
+    formData.append('courseData', JSON.stringify(courseData))
+    formData.append('image', image)
+
+    try {
+        const token = await getToken()
+        console.log("Token fetched:", token);
+
+        const { data } = await axios.post(
+            backendUrl + '/api/educator/add-course',
+            formData,
+            { headers: { Authorization: `Bearer ${token}` } }
+        )
+
+        if (data.success) {
+            toast.success('Course added successfully!')
+            // Reset form
+            setCourseTitle('')
+            setCoursePrice(0)
+            setDiscount(0)
+            setImage(null)
+            setChapters([])
+            quillRef.current.root.innerHTML = ''
+        } else {
+            toast.error(data.message)
+        }
+    } catch (error) {
+        toast.error(error.message)
+        console.error("Error in handleSubmit:", error);
+    }
+};
 
 
   useEffect(()=>{
@@ -102,6 +150,8 @@ const AddCourse = () => {
       });
     }
   }, [])
+
+  
 
   
   return (
@@ -130,7 +180,7 @@ const AddCourse = () => {
             <p>Course Thumbnail</p>
             <label htmlFor='thumbnailImage' className='flex items-center gap-3'>
               <img src={assets.file_upload_icon} alt="" className='p-3 bg-blue-500 rounded' />
-              <input type="fie" id='thumbnailImage' onChange={e => setImage(e.target.files[0])} accept="image/*" hidden />
+              <input type="file" id='thumbnailImage' onChange={e => setImage(e.target.files[0])} accept="image/*" hidden />
               <img className='max-h-10' src={image ? URL.createObjectURL(image) : ''} alt="" />
             </label>
           </div>
@@ -216,15 +266,7 @@ const AddCourse = () => {
                  />
               </div>
 
-              <div className='mb-2'>
-                <p>Lecture Title</p>
-                <input
-                type="text"
-                className='mt-1 block w-full border rounded py-1 px-2'
-                value={lectureDetails.lectureTitle}
-                onChange={(e) => setLectureDetails({ ...lectureDetails,lectureTitle: e.target.value })}
-                 />
-              </div>
+              
 
               <div className='flex gap-2 my-4'>
                 <p>Is Preview Free?</p>
