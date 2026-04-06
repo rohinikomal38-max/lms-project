@@ -45,7 +45,9 @@ const MyEnrollments = () => {
           {enrolledCourses && enrolledCourses.map((course, index)=>(
             <tr key={index} className='border-b border-gray-500/20'>
               <td className='md:px-4 md:pl-4 py-3 flex items-center space-x-3'>              
-                <img src={course.courseThumbnail || courseImg}                
+                <img src={course.courseThumbnail ? `${import.meta.env.VITE_BACKEND_URL}${course.courseThumbnail}`
+                : courseImg
+              }                
                 onError={(e) => {
                   e.target.src = courseImg
                 }} alt="" className='w-14 sm:w-24
