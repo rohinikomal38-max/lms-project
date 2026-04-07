@@ -7,7 +7,7 @@ import courseImg from '../../assets/course_1.png'
 const MyEnrollments = () => {
 
   const {enrolledCourses, calculateCourseDuration, navigate} = useContext(AppContext)
-console.log("ENROLLED COURSES:", enrolledCourses)
+console.log("THUMBNAILS:", enrolledCourses?.map(c => c.courseThumbnail))
   const [progressArray, setProgressArray] = useState([
     {lectureCompleted: 2, totalLectures: 4},
     {lectureCompleted: 1, totalLectures: 5},
