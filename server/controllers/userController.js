@@ -59,6 +59,9 @@ export const purchaseCourse = async (req, res)=>{
 
         const newPurchase = await Purchase.create(purchaseData)
 
+        userData.enrolledCourses.push(courseId)
+        await userData.save()
+
        // Stripe Gateway Initialize
        const stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY)
 
