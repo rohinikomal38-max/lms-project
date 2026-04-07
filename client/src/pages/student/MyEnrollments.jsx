@@ -7,7 +7,7 @@ import courseImg from '../../assets/course_1.png'
 const MyEnrollments = () => {
 
   const {enrolledCourses, calculateCourseDuration, navigate} = useContext(AppContext)
-
+console.log("ENROLLED COURSES:", enrolledCourses)
   const [progressArray, setProgressArray] = useState([
     {lectureCompleted: 2, totalLectures: 4},
     {lectureCompleted: 1, totalLectures: 5},
@@ -45,13 +45,14 @@ const MyEnrollments = () => {
           {enrolledCourses && enrolledCourses.map((course, index)=>(
             <tr key={index} className='border-b border-gray-500/20'>
               <td className='md:px-4 md:pl-4 py-3 flex items-center space-x-3'>              
-                <img src={course.courseThumbnail ? `${import.meta.env.VITE_BACKEND_URL}${course.courseThumbnail}`
-                : courseImg
-              }                
-                onError={(e) => {
-                  e.target.src = courseImg
-                }} alt="" className='w-14 sm:w-24
-                md:w-28' />
+                <img 
+  src={course.courseThumbnail || courseImg}
+  onError={(e) => {
+    e.target.src = courseImg
+  }}
+  alt=""
+  className='w-14 sm:w-24 md:w-28'
+/>
                 <div className='flex-1'>
                   <p className='mb-1 max-sm:text-sm'>{course.courseTitle}                    
                   </p>
