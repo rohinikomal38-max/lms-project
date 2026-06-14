@@ -68,10 +68,10 @@ const CourseDetails = () => {
                   className='w-3.5 h-3.5'/>
                   ))}
                 </div>
-                <p className='text-blue-600'>({courseData.courseRatings.length} {courseData.courseRatings.length > 1 ? 
+                <p className='text-blue-600'>({courseData.courseRatings?.length || 0} {(courseData.courseRatings?.length || 0) > 1 ? 
                 'ratings' : 'rating'})</p>
 
-                <p>{courseData.enrolledStudents.length} {courseData.enrolledStudents.length > 1 ? 'students':'student'}</p>
+                <p>{courseData.enrolledStudents?.length || 0} {(courseData.enrolledStudents?.length || 0) > 1 ? 'students':'student'}</p>
                 
               </div>
 
@@ -96,7 +96,7 @@ const CourseDetails = () => {
                           src={assets.down_arrow_icon} alt="arrow icon"/>
                           <p className='font-medium md:text-base text-sm'>{chapter.chapterTitle}</p>
                         </div>
-                        <p className='text-sm md:text-default'>{chapter.chapterContent.length} lectures -
+                        <p className='text-sm md:text-default'>{chapter.chapterContent?.length || 0} lectures -
                           {calculateChapterTime(chapter)}
                         </p>
                       </div>
