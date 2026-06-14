@@ -27,11 +27,12 @@ export const updateRoleToEducator = async (req, res) => {
 export const addCourse = async (req, res) => {  
     console.log("Uploading to Cloudinary...");  
     try {
-        const { courseData } = req.body;
-        const imageFile = req.file;
-       
+        const { courseData } = req.body;         
         const { userId } = req.auth();
         const educatorId = userId;
+        const imageFile = req.file;
+        
+
 
         if (!imageFile) {
             return res.status(400).json({
@@ -43,7 +44,7 @@ export const addCourse = async (req, res) => {
         let imageUpload = null;
 
         try {
-         const imageUpload = await cloudinary.uploader.upload(req.file.path, {
+            imageUpload = await cloudinary.uploader.upload(req.file.path, {
             resource_type: 'image'
          });
     
