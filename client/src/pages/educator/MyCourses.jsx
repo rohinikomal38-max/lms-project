@@ -15,7 +15,7 @@ const fetchEducatorCourses = async () => {
 useEffect(() => {
   fetchEducatorCourses()
 }, [])
-
+console.log("Courses:", courses);
   return courses ? (
     <div className='h-screen flex flex-col items-start justify-between md:p-8
     md:pb-0 p-4 pt-8 pb-0'>
@@ -42,9 +42,9 @@ useEffect(() => {
                   <span className='truncate hidden md:block'>{course.courseTitle}
                   </span>
                 </td>
-                <td className='px-4 py-3'>{currency} {Math.floor(course.enrolledStudents.length * (course.coursePrice - course.discount * course.coursePrice / 100))}
+                <td className='px-4 py-3'>{currency} {Math.floor((course.enrolledStudents?.length || 0) * (course.coursePrice - course.discount * course.coursePrice / 100))}
                 </td>
-                <td className='px-4 py-3'>{course.enrolledStudents.length}</td>
+                <td className='px-4 py-3'>{course.enrolledStudents?.length || 0}</td>
                 <td className='px-4 py-3'>
                   {new Date(course.createdAt).toLocaleDateString()}
                 </td>
