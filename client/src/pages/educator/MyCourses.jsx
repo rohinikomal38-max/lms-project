@@ -15,7 +15,7 @@ const fetchEducatorCourses = async () => {
 useEffect(() => {
   fetchEducatorCourses()
 }, [])
-console.log("Courses:", courses);
+console.log("Courses JSON:", JSON.stringify(courses, null, 2));
   return courses ? (
     <div className='h-screen flex flex-col items-start justify-between md:p-8
     md:pb-0 p-4 pt-8 pb-0'>
