@@ -8,13 +8,10 @@ const {currency, allCourses} = useContext(AppContext)
 
 const [courses, setCourses] = useState(null)
 
-const fetchEducatorCourses = async () => {
-  setCourses(allCourses)
-}
-
 useEffect(() => {
-  fetchEducatorCourses()
-}, [])
+  setCourses(allCourses)
+}, [allCourses])
+
 console.log("Courses JSON:", JSON.stringify(courses, null, 2));
   return courses ? (
     <div className='h-screen flex flex-col items-start justify-between md:p-8
