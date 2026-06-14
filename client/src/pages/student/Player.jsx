@@ -44,7 +44,7 @@ console.log('Thumbnail URL:', courseData?.courseThumbnail)
           <h2 className='text-xl font-semibold'>Course Structure</h2>
 
           <div className='pt-5'>
-            {courseData && courseData.courseContent.map((chapter, index) => (
+            {courseData?.courseContent?.map((chapter, index) => (
               <div key={index} className='norder border-gray-300 bg-white mb-2 rounded'>
 
                 <div
@@ -58,13 +58,13 @@ console.log('Thumbnail URL:', courseData?.courseThumbnail)
                     <p className='font-medium md:text-base text-sm'>{chapter.chapterTitle}</p>
                   </div>
                   <p className='text-sm md:text-default'>
-                    {chapter.chapterContent.length} lectures - {calculateChapterTime(chapter)}
+                    {chapter.chapterContent?.length || 0} lectures - {calculateChapterTime(chapter)}
                   </p>
                 </div>
 
                 <div className={`overflow-hidden transition-all duration-300 ${openSections[index] ? 'max-h-96' : 'max-h-0'}`}>
                   <ul className='list-disc md:pl-10 pl-4 pr-4 py-2 text-gray-600 border-t border-gray-300'>
-                    {chapter.chapterContent.map((lecture, i) => (
+                    {chapter.chapterContent?.map((lecture, i) => (
                       <li key={i} className='flex items-start gap-2 py-1'>
                         <img
                           src={false ? assets.blue_tick_icon : assets.play_icon}
