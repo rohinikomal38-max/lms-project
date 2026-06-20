@@ -81,23 +81,27 @@ export const AppContextProvider = (props) => {
 
     // Function to Calculate Course Chapter Time
     const calculateChapterTime = (chapter)=>{
-        let time = 0
-        chapter.chapterContent.map((lecture)=> time += 
-    lecture.lectureDuration)
-    return humanizeDuration(time *60 * 1000, {units: ["h", "m"]})
-    }
+    let time = 0
+
+    chapter?.chapterContent?.forEach((lecture)=>{
+        time += lecture?.lectureDuration || 0
+    })
+
+    return humanizeDuration(time * 60 * 1000, { units: ["h", "m"] })
+}
 
     // Function to Calculate Course Duration
-    const calculateCourseDuration = (course)=>{
-        let time = 0
+   const calculateCourseDuration = (course)=>{
+    let time = 0
 
-        course.courseContent.map((chapter)=> chapter.chapterContent.map(
-            (lecture) => time += lecture.lectureDuration
-        ))
-        return humanizeDuration(time *60 * 1000, {units: ["h", "m"]})
+    course?.courseContent?.forEach((chapter)=>{
+        chapter?.chapterContent?.forEach((lecture)=>{
+            time += lecture?.lectureDuration || 0
+        })
+    })
 
-
-    }
+    return humanizeDuration(time * 60 * 1000, { units: ["h", "m"] })
+}
 
     // Function calculate to No of Lectures in the course
     const calculateNoOfLectures = (course)=>{
