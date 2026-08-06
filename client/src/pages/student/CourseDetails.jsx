@@ -6,6 +6,7 @@ import Loading from '../../components/student/Loading'
 import { assets } from '../../assets/assets'
 import humanizeDuration from 'humanize-duration'
 import Footer from '../../components/student/Footer'
+import axios from "axios";
 import YouTube from 'react-youtube'
 
 
