@@ -19,7 +19,7 @@ const CourseDetails = () => {
   const [isAlreadyEnrolled, setIsAlreadyEnrolled] = useState(false)
    const [playerData, setPlayerData] = useState(null)
 
-  const {allCourses, calculateRating,calculateNoOfLectures,
+  const {backendUrl, calculateRating,calculateNoOfLectures,
     calculateCourseDuration, calculateChapterTime, currency
   } = useContext(AppContext)
 
