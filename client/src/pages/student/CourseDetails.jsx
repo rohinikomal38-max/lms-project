@@ -125,7 +125,7 @@ const CourseDetails = () => {
   });
 }}                   
 
-                                   className='text-blue-500'cursor-pointer>Preview</p>}
+                                   className='text-blue-500 cursor-pointer'>Preview</p>}
                                   <p>{humanizeDuration(lecture.lectureDuration *60 * 1000,
                                     {units: ['h', 'm']})}</p>
                                 </div>
