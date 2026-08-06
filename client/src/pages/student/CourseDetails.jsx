@@ -36,8 +36,10 @@ const CourseDetails = () => {
 };
 
 useEffect(() => {
-  fetchCourseData();
-}, [id]);
+  if (backendUrl && id) {
+    fetchCourseData();
+  }
+}, [backendUrl, id]);
 
   const toggleSection = (index)=> {
    setOpenSections((prev)=>(
