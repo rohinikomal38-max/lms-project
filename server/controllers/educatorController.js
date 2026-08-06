@@ -59,6 +59,7 @@ export const addCourse = async (req, res) => {
         }
 
         const parsedCourseData = JSON.parse(courseData);
+        console.log("Parsed Course Data:", parsedCourseData);
 
         parsedCourseData.educator = educatorId;
 
