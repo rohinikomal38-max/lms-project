@@ -108,7 +108,9 @@ const { backendUrl, getToken } = useContext(AppContext)
         discount: Number(discount),
         courseContent: chapters.map(({ collapsed, ...rest }) => rest)
     }
-
+console.log("Chapters:", chapters);
+console.log("Course Data:", courseData);
+    
     const formData = new FormData()
     formData.append('courseData', JSON.stringify(courseData))
     formData.append('image', image)
