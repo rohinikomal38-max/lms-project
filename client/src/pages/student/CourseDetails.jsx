@@ -117,9 +117,14 @@ const CourseDetails = () => {
                                 </p>
                                 <div className='flex gap-2'>
                                   {lecture.isPreviewFree && <p
-                                  onClick={()=> setPlayerData({
-                                    videoId: lecture.lectureUrl.split('/').pop()
-                                  })}
+                                           onClick={() => {
+  const videoId = new URL(lecture.lectureUrl).searchParams.get("v");
+
+  setPlayerData({
+    videoId
+  });
+}}                   
+
                                    className='text-blue-500'cursor-pointer>Preview</p>}
                                   <p>{humanizeDuration(lecture.lectureDuration *60 * 1000,
                                     {units: ['h', 'm']})}</p>
