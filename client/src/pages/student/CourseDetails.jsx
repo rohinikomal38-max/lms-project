@@ -23,14 +23,21 @@ const CourseDetails = () => {
     calculateCourseDuration, calculateChapterTime, currency
   } = useContext(AppContext)
 
-  const fetchCourseData = async ()=>{
-   const findCourse = allCourses.find(course => course._id === id)
-   setCourseData(findCourse);
-  }
+ const fetchCourseData = async () => {
+  try {
+    const { data } = await axios.get(`${backendUrl}/api/course/${id}`);
 
-  useEffect(()=>{
-    fetchCourseData()
-  },[allCourses])
+    if (data.success) {
+      setCourseData(data.courseData);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+useEffect(() => {
+  fetchCourseData();
+}, [id]);
 
   const toggleSection = (index)=> {
    setOpenSections((prev)=>(
