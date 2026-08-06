@@ -104,16 +104,19 @@ export const AppContextProvider = (props) => {
 }
 
     // Function calculate to No of Lectures in the course
-    const calculateNoOfLectures = (course)=>{
-        let totalLectures = 0;
-        course.courseContent.forEach(chapter => {
-            if(Array.isArray(chapter.chapterContent)){
-                totalLectures += chapter.chapterContent.length;
-            }
+   const calculateNoOfLectures = (course) => {
+    if (!course?.courseContent) return 0;
 
-        });
-        return totalLectures;
-    }
+    let totalLectures = 0;
+
+    course.courseContent.forEach((chapter) => {
+        if (Array.isArray(chapter.chapterContent)) {
+            totalLectures += chapter.chapterContent.length;
+        }
+    });
+
+    return totalLectures;
+};
 
     // Fetch User Enrolled Courses
     const fetchUserEnrolledCourses = async ()=>{
