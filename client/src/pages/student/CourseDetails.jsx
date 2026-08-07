@@ -204,17 +204,17 @@ useEffect(() => {
                 </p>
               </div>
 
-        <div className="mt-10">
+     <div className="mt-10">
   <h2 className="text-2xl font-semibold mb-5">
     Student Reviews
   </h2>
 
-  {courseData.courseRatings.length === 0 ? (
+  {(courseData.courseRatings || []).length === 0 ? (
     <p className="text-gray-500">
       No reviews yet.
     </p>
   ) : (
-    courseData.courseRatings.map((review, index) => (
+    (courseData.courseRatings || []).map((review, index) => (
       <div
         key={index}
         className="border rounded-lg p-4 mb-4 bg-white shadow-sm"
@@ -228,11 +228,7 @@ useEffect(() => {
             {[...Array(5)].map((_, i) => (
               <img
                 key={i}
-                src={
-                  i < review.rating
-                    ? assets.star
-                    : assets.star_blank
-                }
+                src={i < review.rating ? assets.star : assets.star_blank}
                 className="w-4 h-4"
                 alt=""
               />
@@ -241,16 +237,6 @@ useEffect(() => {
         </div>
 
         <p className="text-gray-600 mt-2">
-          {review.comment}
-        </p>
-      </div>
-    ))
-  )}
-</div>
-
-        
-
-        <p className="text-gray-600">
           {review.comment}
         </p>
       </div>
