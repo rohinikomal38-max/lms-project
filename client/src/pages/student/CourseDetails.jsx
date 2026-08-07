@@ -204,6 +204,46 @@ useEffect(() => {
                 </p>
               </div>
 
+        <div className="mt-10">
+  <h2 className="text-2xl font-semibold mb-5">
+    Student Reviews
+  </h2>
+
+  {courseData.courseRatings.length === 0 ? (
+    <p>No reviews yet.</p>
+  ) : (
+    courseData.courseRatings.map((review, index) => (
+      <div
+        key={index}
+        className="border rounded-lg p-4 mb-4"
+      >
+        <h3 className="font-semibold">
+          {review.userName}
+        </h3>
+
+        <div className="flex my-2">
+          {[1,2,3,4,5].map((star)=>(
+            <span
+              key={star}
+              className={`text-xl ${
+                star <= review.rating
+                  ? "text-yellow-500"
+                  : "text-gray-300"
+              }`}
+            >
+              ★
+            </span>
+          ))}
+        </div>
+
+        <p className="text-gray-600">
+          {review.comment}
+        </p>
+      </div>
+    ))
+  )}
+</div>
+
         <div className="py-10">
   <h3 className="text-2xl font-semibold mb-4">
     Write a Review
