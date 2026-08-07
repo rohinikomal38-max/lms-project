@@ -1,4 +1,5 @@
 import Course from "../models/Course.js";
+import User from "../models/User.js";
 
 // Get All Courses
 export const getAllCourse = async (req, res)=>{
@@ -34,5 +35,53 @@ export const getCourseId = async (req, res)=>{
         res.json({ success: false, message: error.message })
     }
 }
+
+export const addReview = async (req, res) => {
+  try {
+    const { courseId, rating, comment } = req.body;
+    const { userId } = req.auth();
+
+    const user = await User.findById(userId);
+    const course = await Course.findById(courseId);
+
+    if (!course) {
+      return res.json({
+        success: false,
+        message: "Course not found"
+      });
+    }
+
+    const alreadyReviewed = course.courseRatings.find(
+      review => review.userId === userId
+    );
+
+    if (alreadyReviewed) {
+      return res.json({
+        success: false,
+        message: "You have already reviewed this course."
+      });
+    }
+
+    course.courseRatings.push({
+      userId,
+      userName: user.name,
+      rating,
+      comment
+    });
+
+    await course.save();
+
+    res.json({
+      success: true,
+      message: "Review Added Successfully"
+    });
+
+  } catch (error) {
+    res.json({
+      success: false,
+      message: error.message
+    });
+  }
+};
 
 
