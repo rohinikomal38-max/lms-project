@@ -59,6 +59,40 @@ useEffect(() => {
    ));
   };
 
+  const submitReview = async () => {
+  try {
+    const token = await getToken();
+
+    const { data } = await axios.post(
+      `${backendUrl}/api/course/review`,
+      {
+        courseId: courseData._id,
+        rating,
+        comment,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (data.success) {
+      alert("Review submitted successfully!");
+
+      setRating(0);
+      setComment("");
+
+      fetchCourseData();
+    } else {
+      alert(data.message);
+    }
+  } catch (error) {
+    console.log(error);
+    alert("Something went wrong.");
+  }
+};
+
   return courseData ? (
     <>
     <div className='flex md:flex-row flex-col-reverse gap-10 relative items-start
@@ -169,6 +203,43 @@ useEffect(() => {
                 dangerouslySetInnerHTML={{__html: courseData.courseDescription}}>          
                 </p>
               </div>
+
+        <div className="py-10">
+  <h3 className="text-2xl font-semibold mb-4">
+    Write a Review
+  </h3>
+
+  {/* Stars */}
+  <div className="flex gap-2 mb-4">
+    {[1, 2, 3, 4, 5].map((star) => (
+      <span
+        key={star}
+        onClick={() => setRating(star)}
+        className={`text-3xl cursor-pointer ${
+          rating >= star ? "text-yellow-500" : "text-gray-300"
+        }`}
+      >
+        ★
+      </span>
+    ))}
+  </div>
+
+  {/* Comment */}
+  <textarea
+    rows="4"
+    value={comment}
+    onChange={(e) => setComment(e.target.value)}
+    placeholder="Write your review..."
+    className="border rounded-lg w-full p-3"
+  />
+
+  <button
+    onClick={submitReview}
+    className="mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg"
+  >
+    Submit Review
+  </button>
+</div>
 
 
       </div>
