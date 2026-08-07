@@ -22,7 +22,7 @@ const CourseDetails = () => {
   const {backendUrl, calculateRating,calculateNoOfLectures,
     calculateCourseDuration, calculateChapterTime, currency
   } = useContext(AppContext)
-console.log(currency);
+
   
  const fetchCourseData = async () => {
   try {
