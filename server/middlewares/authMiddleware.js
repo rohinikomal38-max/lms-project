@@ -17,3 +17,24 @@ export const protectEducator = async (req, res, next)=>{
     }
 
 }
+
+// Middleware (Protect User Routes)
+export const protectUser = async (req, res, next) => {
+  try {
+    const { userId } = req.auth();
+
+    if (!userId) {
+      return res.json({
+        success: false,
+        message: "Unauthorized Access",
+      });
+    }
+
+    next();
+  } catch (error) {
+    res.json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
