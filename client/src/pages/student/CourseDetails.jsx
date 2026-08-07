@@ -18,10 +18,19 @@ const CourseDetails = () => {
   const [openSections, setOpenSections] = useState({})
   const [isAlreadyEnrolled, setIsAlreadyEnrolled] = useState(false)
    const [playerData, setPlayerData] = useState(null)
+  
+  const [rating, setRating] = useState(0);
+const [comment, setComment] = useState("");
 
-  const {backendUrl, calculateRating,calculateNoOfLectures,
-    calculateCourseDuration, calculateChapterTime, currency
-  } = useContext(AppContext)
+const {
+  backendUrl,
+  calculateRating,
+  calculateNoOfLectures,
+  calculateCourseDuration,
+  calculateChapterTime,
+  currency,
+  getToken
+} = useContext(AppContext)
 
   
  const fetchCourseData = async () => {
