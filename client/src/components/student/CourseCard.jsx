@@ -26,7 +26,7 @@ const CourseCard = ({ course }) => {
       : '0.00'
 
   // --- Safe educator ---
-  const educatorName = course?.educator?.name || 'Educator'
+  const educatorName = "Rohini Komal";
 
   return (
     <Link
