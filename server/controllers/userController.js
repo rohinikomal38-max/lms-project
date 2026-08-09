@@ -176,3 +176,56 @@ export const addUserRating = async (req, res)=>{
        return res.json({ success: false, message: error.message });
     }
 }
+
+// Enroll Course
+export const enrollCourse = async (req, res) => {
+  try {
+    const { userId } = req.auth();
+    const { courseId } = req.body;
+
+    const user = await User.findById(userId);
+    const course = await Course.findById(courseId);
+
+    if (!user) {
+      return res.json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    if (!course) {
+      return res.json({
+        success: false,
+        message: "Course not found"
+      });
+    }
+
+    // Check if already enrolled
+    if (user.enrolledCourses.includes(courseId)) {
+      return res.json({
+        success: false,
+        message: "You are already enrolled in this course"
+      });
+    }
+
+    // Add course to user's enrolled courses
+    user.enrolledCourses.push(courseId);
+
+    // Add user to course's enrolled students
+    course.enrolledStudents.push(userId);
+
+    await user.save();
+    await course.save();
+
+    res.json({
+      success: true,
+      message: "Course enrolled successfully"
+    });
+
+  } catch (error) {
+    res.json({
+      success: false,
+      message: error.message
+    });
+  }
+};
