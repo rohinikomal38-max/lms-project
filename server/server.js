@@ -42,6 +42,4 @@ app.use("/api/course", express.json(), courseRouter);
 app.use("/api/user", express.json(), userRouter);
 app.post('/stripe', express.raw({ type: 'application/json' }), stripeWebhooks)
 
-// Port
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+export default app;
