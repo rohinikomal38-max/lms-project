@@ -27,7 +27,10 @@ await connectDB();
 connectCloudinary();
 
 // Middlewares
-app.use(cors());
+app.use(cors({
+  origin: "https://lms-project-ruby-sigma.vercel.app",
+  credentials: true
+}));
 app.use(clerkMiddleware());
 app.use(express.json());
 
