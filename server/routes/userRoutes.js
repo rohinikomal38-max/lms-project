@@ -1,5 +1,6 @@
 import express from 'express'
 import { addUserRating, getUserCourseProgress, getUserData, purchaseCourse, updateUserCourseProgress, userEnrolledCourses, enrollCourse } from '../controllers/userController.js'
+import { protectUser } from '../middleware/authMiddleware.js'
 
 const userRouter = express.Router()
 
