@@ -73,6 +73,32 @@ const Player = () => {
 }, [courseId]);
 
 
+  const markLectureAsCompleted = async () => {
+  try {
+    const token = await getToken();
+
+    const { data } = await axios.post(
+      `${backendUrl}/api/user/update-course-progress`,
+      {
+        courseId,
+        lectureId: playerData.lectureId
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    if (data.success) {
+      await fetchCourseProgress();
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
 
   
   return (
@@ -115,9 +141,12 @@ const Player = () => {
                           <div className='flex gap-2'>
                             {lecture.lectureUrl && (
                               <p
-                                onClick={() => setPlayerData({
-                                  ...lecture, chapter: index + 1, lecture: i + 1
-                                })}
+                               onClick={() => setPlayerData({
+  ...lecture,
+  chapter: index + 1,
+  lecture: i + 1,
+  lectureId: lecture.lectureId
+})}
                                 className='text-blue-500 cursor-pointer'
                               >
                                 Watch
@@ -152,7 +181,14 @@ const Player = () => {
 />
               <div className='flex justify-between items-center mt-1'>
                 <p>{playerData.chapter}.{playerData.lecture} {playerData.lectureTitle}</p>
-                <button className='text-blue-600'>{false ? 'Completed' : 'Mark Complete'}</button>
+             <button
+  onClick={markLectureAsCompleted}
+  className='text-blue-600'
+>
+  {progressData?.lectureCompleted?.includes(playerData.lectureId)
+    ? 'Completed'
+    : 'Mark Complete'}
+</button>
               </div>
             </div>
           ) : (
