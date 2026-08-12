@@ -1,30 +1,64 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { AppContext } from '../../context/AppContext'
 import {Line} from 'rc-progress'
 import Footer from '../../components/student/Footer'
 import courseImg from '../../assets/course_1.png'
+import axios from 'axios'
 
 const MyEnrollments = () => {
 
-  const {enrolledCourses, calculateCourseDuration, navigate} = useContext(AppContext)
+  const {enrolledCourses, calculateCourseDuration, navigate,  getToken, backendUrl} = useContext(AppContext)
 console.log("THUMBNAILS:", enrolledCourses?.map(c => c.courseThumbnail))
-  const [progressArray, setProgressArray] = useState([
-    {lectureCompleted: 2, totalLectures: 4},
-    {lectureCompleted: 1, totalLectures: 5},
-    {lectureCompleted: 3, totalLectures: 6},
-    {lectureCompleted: 4, totalLectures: 4},
-    {lectureCompleted: 0, totalLectures: 3},
-    {lectureCompleted: 5, totalLectures: 7},
-    {lectureCompleted: 6, totalLectures: 8},
-    {lectureCompleted: 2, totalLectures: 6},
-    {lectureCompleted: 4, totalLectures: 10},
-    {lectureCompleted: 3, totalLectures: 5},
-    {lectureCompleted: 7, totalLectures: 7},
-    {lectureCompleted: 1, totalLectures: 4},
-    {lectureCompleted: 0, totalLectures: 2},
-    {lectureCompleted: 5, totalLectures: 5}
-  ])
+ const [progressArray, setProgressArray] = useState([])
 
+  const fetchProgress = async () => {
+  try {
+    const token = await getToken();
+
+    const progressPromises = enrolledCourses.map(async (course) => {
+      const { data } = await axios.post(
+        `${backendUrl}/api/user/get-course-progress`,
+        {
+          courseId: course._id
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      const totalLectures = course.courseContent?.reduce(
+        (total, chapter) =>
+          total + (chapter.chapterContent?.length || 0),
+        0
+      );
+
+      const lectureCompleted =
+        data.success && data.progressData
+          ? data.progressData.lectureCompleted.length
+          : 0;
+
+      return {
+        lectureCompleted,
+        totalLectures
+      };
+    });
+
+    const progressData = await Promise.all(progressPromises);
+
+    setProgressArray(progressData);
+
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+  useEffect(() => {
+  if (enrolledCourses.length > 0) {
+    fetchProgress();
+  }
+}, [enrolledCourses]);
 
   return (
     <>
