@@ -24,6 +24,8 @@ export const getUserData = async (req, res)=>{
 export const userEnrolledCourses = async (req, res)=>{
     try {
         const { userId }= req.auth()
+        console.log("Clerk userId:", userId);
+        
         const userData = await User.findById(userId).populate('enrolledCourses')
 
         if(!userData){
@@ -183,8 +185,16 @@ export const enrollCourse = async (req, res) => {
     const { userId } = req.auth();
     const { courseId } = req.body;
 
+        console.log("Enroll Clerk userId:", userId);
+    console.log("Enroll courseId:", courseId);
+
+
     const user = await User.findById(userId);
     const course = await Course.findById(courseId);
+
+       console.log("User found:", !!user);
+    console.log("Course found:", !!course);
+
 
     if (!user) {
       return res.json({
