@@ -90,9 +90,17 @@ console.log("THUMBNAILS:", enrolledCourses?.map(c => c.courseThumbnail))
                 <div className='flex-1'>
                   <p className='mb-1 max-sm:text-sm'>{course.courseTitle}                    
                   </p>
-                  <Line strokeWidth={2} percent={progressArray[index] ?
-                    (progressArray[index].lectureCompleted * 100) / progressArray[index]
-                    .totalLectures : 0 } className='bg-gray-300 rounded-full'  />
+                  
+                 <Line
+  strokeWidth={2}
+  percent={
+    progressArray[index]?.totalLectures > 0
+      ? (progressArray[index].lectureCompleted * 100) /
+        progressArray[index].totalLectures
+      : 0
+  }
+  className='bg-gray-300 rounded-full'
+/>
                 </div>
               </td>
               <td className='px-4 py-3 max-sm:hidden'>
@@ -107,9 +115,12 @@ console.log("THUMBNAILS:", enrolledCourses?.map(c => c.courseThumbnail))
                 <button className='px-3 sm:px-5 py-1.5 sm:py-2 bg-blue-600
                 max-sm:text-xs text-white' onClick={()=> navigate('/player/' +
                   course._id)}>
-                  {progressArray[index] && progressArray[index].
-                  lectureCompleted / progressArray[index].
-                  totalLectures === 1 ? 'Completed' : 'On Going' }                  
+                  
+                {progressArray[index]?.totalLectures > 0 &&
+ progressArray[index]?.lectureCompleted ===
+ progressArray[index]?.totalLectures
+  ? 'Completed'
+  : 'On Going'}                 
                   </button>
               </td>
             </tr>
