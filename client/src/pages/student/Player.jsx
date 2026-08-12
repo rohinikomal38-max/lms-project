@@ -38,17 +38,12 @@ const Player = () => {
     ));
   };
 
-  useEffect(() => {
-    getCourseData()
-  }, [enrolledCourses])
-console.log('Thumbnail URL:', courseData?.courseThumbnail)
-
-const fetchCourseProgress = async () => {
+  const fetchCourseProgress = async () => {
   try {
     const token = await getToken();
 
     const { data } = await axios.post(
-      `${backendUrl}/api/user/course-progress`,
+      `${backendUrl}/api/user/get-course-progress`,
       {
         courseId
       },
@@ -66,6 +61,19 @@ const fetchCourseProgress = async () => {
     console.log(error);
   }
 };
+
+  useEffect(() => {
+    getCourseData()
+  }, [enrolledCourses])
+
+  useEffect(() => {
+  if (courseId) {
+    fetchCourseProgress();
+  }
+}, [courseId]);
+
+
+
   
   return (
     <>
