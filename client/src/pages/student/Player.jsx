@@ -6,14 +6,20 @@ import humanizeDuration from 'humanize-duration'
 import YouTube from 'react-youtube'
 import Footer from '../../components/student/Footer'
 import Rating from '../../components/student/Rating'
+import axios from 'axios'
 
 const Player = () => {
 
-  const { enrolledCourses, calculateChapterTime } = useContext(AppContext)
+  const {enrolledCourses,
+  calculateChapterTime,
+  getToken,
+  backendUrl
+} = useContext(AppContext)
   const { courseId } = useParams()
   const [courseData, setCourseData] = useState(null)
   const [openSections, setOpenSections] = useState({})
   const [playerData, setPlayerData] = useState(null)
+  const [progressData, setProgressData] = useState(null)
 
   const getCourseData = () => {
     enrolledCourses.map((course) => {
@@ -36,6 +42,31 @@ const Player = () => {
     getCourseData()
   }, [enrolledCourses])
 console.log('Thumbnail URL:', courseData?.courseThumbnail)
+
+const fetchCourseProgress = async () => {
+  try {
+    const token = await getToken();
+
+    const { data } = await axios.post(
+      `${backendUrl}/api/user/course-progress`,
+      {
+        courseId
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    if (data.success) {
+      setProgressData(data.progressData);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+  
   return (
     <>
       <div className='p-4 sm:p-10 flex flex-col-reverse md:grid md:grid-cols-2 gap-10 md:px-36'>
