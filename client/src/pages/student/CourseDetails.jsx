@@ -93,12 +93,12 @@ useEffect(() => {
   }
 };
 
-  const enrollCourse = async () => {
+const enrollCourse = async () => {
   try {
     const token = await getToken();
 
     const { data } = await axios.post(
-      `${backendUrl}/api/user/enroll-course`,
+      `${backendUrl}/api/user/purchase`,
       {
         courseId: courseData._id
       },
@@ -110,18 +110,16 @@ useEffect(() => {
     );
 
     if (data.success) {
-      alert("Course enrolled successfully!");
-      setIsAlreadyEnrolled(true);
+      window.location.href = data.session_url;
     } else {
       alert(data.message);
     }
 
   } catch (error) {
     console.log(error);
-    alert("Something went wrong while enrolling.");
+    alert("Something went wrong while starting payment.");
   }
 };
-
   useEffect(() => {
   const checkEnrollment = async () => {
     try {
