@@ -93,6 +93,67 @@ useEffect(() => {
   }
 };
 
+  const enrollCourse = async () => {
+  try {
+    const token = await getToken();
+
+    const { data } = await axios.post(
+      `${backendUrl}/api/user/enroll-course`,
+      {
+        courseId: courseData._id
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    if (data.success) {
+      alert("Course enrolled successfully!");
+      setIsAlreadyEnrolled(true);
+    } else {
+      alert(data.message);
+    }
+
+  } catch (error) {
+    console.log(error);
+    alert("Something went wrong while enrolling.");
+  }
+};
+
+  useEffect(() => {
+  const checkEnrollment = async () => {
+    try {
+      const token = await getToken();
+
+      const { data } = await axios.get(
+        `${backendUrl}/api/user/enrolled-courses`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      if (data.success) {
+        const enrolled = data.enrolledCourses.some(
+          (course) => course._id === id
+        );
+
+        setIsAlreadyEnrolled(enrolled);
+      }
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  if (backendUrl && id) {
+    checkEnrollment();
+  }
+}, [backendUrl, id, getToken]);
+
   return courseData ? (
     <>
     <div className='flex md:flex-row flex-col-reverse gap-10 relative items-start
@@ -331,10 +392,14 @@ useEffect(() => {
 
           </div>
 
-          <button className='md:mt-6 mt-4 w-full py-3 rounded bg-blue-600
-          text-white font-medium'
-          >{isAlreadyEnrolled ? 'Already Enrolled' : 'Enroll Now'}</button>
-
+         <button
+  onClick={enrollCourse}
+  disabled={isAlreadyEnrolled}
+  className='md:mt-6 mt-4 w-full py-3 rounded bg-blue-600
+  text-white font-medium'
+>
+  {isAlreadyEnrolled ? 'Already Enrolled' : 'Enroll Now'}
+</button>
           <div>
             <p>What's in the course?</p>
             <ul className='ml-4 pt-2 text-sm md:text-default list-disc
