@@ -154,7 +154,7 @@ LMS/
 ### Clone Repository
 
 ```bash
-git clone https://github.com/rohinikomal38-max/YOUR_REPO_NAME.git
+git clone https://github.com/rohinikomal38-max/lms-project.git
 
 
 📦 Frontend Setup
@@ -183,9 +183,9 @@ Some features that can be added in the future:
 ❤️ Wishlist functionality
 🌙 Dark mode
 
-👨‍💻 Author
+👨‍💻 Developer
 Rohini Komal
-
+GitHub: rohinikomal38-max
 
 ⭐ Support
 
